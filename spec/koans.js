@@ -123,16 +123,16 @@ describe('`string.includes()` finds string within another string. ', () => {
     });
     describe('invalid positions get converted to 0', function() {
       it('e.g. `undefined`', function() {
-        const findAtPosition = (pos) => 'xyz'.includes('undefined');
-        //expect(findAtPosition(void 0)).toBe(true); >>>>>>>>>>>>>>>>>>>
+        const findAtPosition = (pos) => 'xyz'.includes('z',pos);
+        expect(findAtPosition(void 0)).toBe(true);
       });
       it('negative numbers', function() {
-        /*const findAtPosition = (pos) => 'xyz'.includes(????); */
-        //expect(findAtPosition(-2)).toBe(true);
+        const findAtPosition = (pos) => 'xyz'.includes('z',pos);
+        expect(findAtPosition(-2)).toBe(true);
       });
       it('NaN', function() {
-        /* const findAtPosition = (pos) => 'xyz'.includes(?????); */
-        //expect(findAtPosition(NaN)).toBe(true);
+        const findAtPosition = (pos) => 'xyz'.includes('z',pos); 
+        expect(findAtPosition(NaN)).toBe(true);
       });
     });
   });
@@ -261,8 +261,8 @@ describe('destructuring also works on strings. ', () => {
   });
   
   it('missing characters are undefined', () => {
-    const [a, c] = 'ab';
-    //expect(c).toEqual(void 0);
+    const [a, ,c] = 'ab';
+    expect(c).toEqual(void 0);
   });  
 });
 
@@ -365,12 +365,12 @@ describe('arrow functions. ', () => {
   
     getFunction() {
       return () => {
-        return new LexicallyBound() /*changes might go here*/
+        return this; /*changes might go here*/
       }
     }
   
     getArgumentsFunction() {
-      return function() { return arguments } /*or here*/
+      return () => { return arguments } /*or here*/
     } 
   }
 
@@ -380,23 +380,23 @@ describe('arrow functions. ', () => {
       let bound = new LexicallyBound();
       let fn = bound.getFunction();
       
-      //expect(fn()).toBe(bound);
+      expect(fn()).toBe(bound);
     });
   
     it('can NOT bind a different context', function() {
       let bound = new LexicallyBound();
       let fn = bound.getFunction();
       let anotherObj = {};
-      let expected = anotherObj; //change this
+      let expected =  bound; //change this
       
-      //expect(fn.call(anotherObj)).toBe(expected);
+      expect(fn.call(anotherObj)).toBe(expected);
     });
     
     it('`arguments` doesnt work inside arrow functions', function() {
       let bound = new LexicallyBound();
       let fn = bound.getArgumentsFunction();
       
-      //expect(fn(1, 2).length).toEqual(0);
+      expect(fn(1, 2).length).toEqual(0);
     });
     
   });
@@ -521,9 +521,9 @@ describe('spread with arrays. ', () => {
   describe('used as function parameter', () => {
     it('prefix with `...` to spread as function params', function() {
       const magicNumbers = [];
-      const fn = ([]) => {
-        //expect(magicNumbers[0]).toEqual(magicA);
-        //expect(magicNumbers[1]).toEqual(magicB);
+      const fn = ([magicA, magicB]) => {
+        expect(magicNumbers[0]).toEqual(magicA);
+        expect(magicNumbers[1]).toEqual(magicB);
       };
       fn(magicNumbers);
     });
@@ -549,7 +549,7 @@ describe('spread with strings', () => {
 describe('class creation', () => {
 
   it('is as simple as `class XXX {}`', function() {
-    let TestClass = {};
+    class TestClass {};
     
     const instance = new TestClass();
     expect(typeof instance).toBe('object');
